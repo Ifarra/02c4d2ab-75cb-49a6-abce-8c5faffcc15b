@@ -1,0 +1,11 @@
+PUT http://localhost:3000/api/userApi?id=woxqeVTDbzFXE6NmZDAI
+accept: application/json
+Content-Type: application/json
+
+{
+  "first_name": "test Updated",
+  "last_name": "test",
+  "position": "CEO",
+  "phone": "13123213123",
+  "email": "test@gmail.com"
+}
