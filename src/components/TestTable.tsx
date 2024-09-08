@@ -19,9 +19,9 @@ interface ChangedFields {
   email: boolean;
 }
 
-const Table = ({ data }: { data: User[] }) => {
-  const [loading, setLoading] = useState(true);
-  const [itemData, setItemData] = useState<User[]>(data);
+const Table = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [itemData, setItemData] = useState<User[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof User;
     direction: "ascending" | "descending";
@@ -29,17 +29,34 @@ const Table = ({ data }: { data: User[] }) => {
     key: "first_name",
     direction: "ascending",
   });
-  const [isSortingDisabled, setIsSortingDisabled] = useState(false);
+  const [isSortingDisabled, setIsSortingDisabled] = useState<boolean>(false);
+  const [changedFields, setChangedFields] = useState<ChangedFields[]>([]);
 
-  const [changedFields, setChangedFields] = useState<ChangedFields[]>(
-    data.map(() => ({
-      first_name: false,
-      last_name: false,
-      position: false,
-      phone: false,
-      email: false,
-    }))
-  );
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/userApi");
+      if (!response.ok) throw new Error("Failed to fetch data");
+      const data = await response.json();
+      setItemData(data);
+      setChangedFields(
+        data.map(() => ({
+          first_name: false,
+          last_name: false,
+          position: false,
+          phone: false,
+          email: false,
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch items:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleChange = (index: number, column: keyof User, value: string) => {
     const updatedItems = [...itemData];
@@ -52,10 +69,6 @@ const Table = ({ data }: { data: User[] }) => {
     setChangedFields(updatedChangedFields);
     setIsSortingDisabled(true);
   };
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
 
   const requestSort = (key: keyof User) => {
     if (isSortingDisabled) return;
@@ -81,7 +94,7 @@ const Table = ({ data }: { data: User[] }) => {
     setLoading(true);
     const invalidEmails = itemData.filter((item) => {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return !re.test(item.email?.toLowerCase() || ""); // Use optional chaining and fallback
+      return !re.test(item.email?.toLowerCase() || "");
     });
 
     const duplicateEmails = itemData.filter(
@@ -120,8 +133,11 @@ const Table = ({ data }: { data: User[] }) => {
 
       if (!response.ok) throw new Error("Failed to update all items");
 
+      const result = await response.json();
+      alert(result.message);
+      setIsSortingDisabled(false);
       setChangedFields(
-        data.map(() => ({
+        itemData.map(() => ({
           first_name: false,
           last_name: false,
           position: false,
@@ -129,13 +145,9 @@ const Table = ({ data }: { data: User[] }) => {
           email: false,
         }))
       );
-
-      const result = await response.json();
-      alert(result.message);
-      setLoading(false);
-      setIsSortingDisabled(false);
     } catch (error) {
       console.error("Error updating documents:", error);
+    } finally {
       setLoading(false);
     }
   };
