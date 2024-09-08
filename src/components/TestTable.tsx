@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface User {
@@ -183,9 +184,9 @@ const Table = () => {
         >
           Add New Row
         </button>
-        <a href="/doc" className="btn btn-main btn-outline btn-primary">
+        <Link href="/doc" className="btn btn-main btn-outline btn-primary">
           API Documentation
-        </a>
+        </Link>
       </div>
       <table className="table table-md w-full">
         <thead>
