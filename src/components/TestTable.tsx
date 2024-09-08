@@ -183,6 +183,9 @@ const Table = () => {
         >
           Add New Row
         </button>
+        <a href="/doc" className="btn btn-main btn-outline btn-primary">
+          API Documentation
+        </a>
       </div>
       <table className="table table-md w-full">
         <thead>
