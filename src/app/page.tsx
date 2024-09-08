@@ -1,14 +1,5 @@
 import TestTable from "@/components/TestTable";
 
-interface User {
-  id?: string;
-  first_name: string;
-  last_name: string;
-  position: string;
-  phone: string;
-  email: string;
-}
-
 const Home = () => {
   return (
     <div className="flex justify-center items-center w-full h-screen bg-main">
